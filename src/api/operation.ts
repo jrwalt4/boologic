@@ -4,11 +4,15 @@ import { XYCoord } from "react-dnd";
 export type OperationRegistry = OperationDefinition[];
 
 export type ID = string;
-export type OperationInput = {
+export type OperationIO = {
   [ioId: string]: boolean | number;
 };
-export type OperationOutput = OperationInput;
-export type OperationSignature = (inputs: OperationInput) => Promise<OperationOutput>;
+
+export interface OperationIOGroup {
+  [groupId: string]: ID[]
+}
+
+export type OperationSignature = (inputs: OperationIO) => Promise<OperationIO>;
 
 export interface OperationDefinition {
   id: ID;
@@ -70,7 +74,7 @@ async function compileOperation(
     }
   );
 
-  return async (inputs: OperationInput): Promise<OperationOutput> => {
+  return async (inputs: OperationIO): Promise<OperationIO> => {
     const opInputs = new Map<ID, number | boolean>();
     const opOutputs = new Map<ID, number | boolean>();
     for (const [id, val] of Object.entries(inputs)) {
@@ -90,7 +94,7 @@ async function compileOperation(
           continue;
         }
         if (inputIDs.every((inputHash) => opInputs.has(inputHash))) {
-          const inputValues = {} as OperationInput;
+          const inputValues = {} as OperationIO;
           inputIDs.forEach((inpID) => {
             inputValues[dehashId(inpID)] = opInputs.get(inpID)!;
           });
@@ -102,7 +106,7 @@ async function compileOperation(
         }
       }
     }
-    const outputValues = {} as OperationOutput;
+    const outputValues = {} as OperationIO;
     if (counter === 0) {
       for (const [id, val] of opOutputs) {
         outputValues[id] = val;
@@ -121,6 +125,8 @@ const AndOperation: OperationSignature = ({ A, B }) => Promise.resolve({
   Q1: Boolean(A) && Boolean(B)
 });
 
+export const BL_ROOT_OP_CODE = "__bl_root__";
+
 export const defaultRegistry: OperationRegistry = [
   {
     id: "AND",
@@ -137,6 +143,13 @@ export const defaultRegistry: OperationRegistry = [
     outputIDs: ["Q1"],
     definition: null,
     execute: NotOperation
+  },
+  {
+    id: BL_ROOT_OP_CODE,
+    name: "Root",
+    inputIDs: [],
+    outputIDs: [],
+    definition: null
   }
 ];
 
@@ -154,8 +167,8 @@ export function getOperation(
 export async function executeOperation(
   registry: OperationRegistry,
   opId: ID,
-  input: OperationInput
-): Promise<OperationOutput> {
+  input: OperationIO
+): Promise<OperationIO> {
   const opDef = getOperation(registry, opId);
   if (opDef == null) {
     throw new Error(`No operation "${opId}"`);

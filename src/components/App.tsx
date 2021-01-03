@@ -5,7 +5,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
-import Board from "components/Board";
+import OperationEditor from "components/OperationEditor";
+import { BL_ROOT_OP_CODE } from "api/operation";
 
 const AppContainer = withStyles((theme) => ({
   root: {
@@ -22,7 +23,7 @@ export default function App() {
         </Toolbar>
       </AppBar>
       <AppContainer>
-        <Board />
+        <OperationEditor opId={BL_ROOT_OP_CODE} />
       </AppContainer>
     </>
   );

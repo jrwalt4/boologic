@@ -19,15 +19,15 @@ const _registryDistinct = _registry.pipe(distinct());
 
 const _setup = (async function _setupRegistry(_init_registry: OperationRegistry) {
   try {
-  if (process.env.NODE_ENV === "test") {
-    await lf.defineDriver(memoryStorageDriver);
-    await lf.setDriver(memoryStorageDriver._driver);
-  } else {
-    await lf.setDriver(lf.LOCALSTORAGE);
+    if (process.env.NODE_ENV === "test" || process.env.NODE_ENV === "development") {
+      await lf.defineDriver(memoryStorageDriver);
+      await lf.setDriver(memoryStorageDriver._driver);
+    } else {
+      await lf.setDriver(lf.LOCALSTORAGE);
+    }
+  } catch (err) {
+    throw err;
   }
-} catch(err) {
-  throw err;
-}
 
   let ops = await lf.getItem<OperationRegistry>(RegistryKeys.OP_DEFS);
   if (ops == null) {
