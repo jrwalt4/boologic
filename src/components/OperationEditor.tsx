@@ -2,6 +2,7 @@ import React, { ReactElement } from "react";
 import { Async, PromiseFn } from "react-async";
 import { DndProvider } from "react-dnd";
 import DndBackend from "react-dnd-mouse-backend";
+import { useParams } from "react-router-dom";
 
 import { ID, OperationDefinition } from "api/operation";
 import { getOperation } from "api/storage";
@@ -12,7 +13,7 @@ import Connection from "./Connection";
 import Operation from "./Operation";
 
 export interface OperationEditorProps {
-    opId: ID;
+    opId?: ID;
 }
 
 const getOperationWithProps: PromiseFn<OperationDefinition> = ({ opId }) => getOperation(opId);
@@ -38,10 +39,12 @@ function renderOperationEditor(def: OperationDefinition) {
 }
 
 export default function OperationEditor({ opId }: OperationEditorProps): ReactElement {
+    const { opCode: routeId } = useParams<{ opCode: ID }>();
+    const id = opId || routeId;
     return (
         <DndProvider backend={DndBackend}>
             <SVGContext.Provider value={{ svgWidth: 500, svgHeight: 300 }}>
-                <Async promiseFn={getOperationWithProps} opId={opId}>
+                <Async promiseFn={getOperationWithProps} opId={id}>
                     <Async.Pending>...Loading</Async.Pending>
                     <Async.Rejected>{(err) => <div>{err.message}</div>}</Async.Rejected>
                     <Async.Fulfilled>{renderOperationEditor}</Async.Fulfilled>

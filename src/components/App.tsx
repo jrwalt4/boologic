@@ -1,4 +1,10 @@
 import * as React from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import MuiContainer from "@material-ui/core/Container";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -23,7 +29,16 @@ export default function App() {
         </Toolbar>
       </AppBar>
       <AppContainer>
-        <OperationEditor opId={BL_ROOT_OP_CODE} />
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <Redirect to={BL_ROOT_OP_CODE} />
+            </Route>
+            <Route path="/:opCode">
+              <OperationEditor/>
+            </Route>
+          </Switch>
+        </Router>
       </AppContainer>
     </>
   );

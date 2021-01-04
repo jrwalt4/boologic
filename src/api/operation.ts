@@ -159,7 +159,7 @@ export function getOperation(
 ): OperationDefinition {
   const def = registry.find((op) => op.id === opId);
   if (def == null) {
-    throw new Error(`Unknwon OpCode: '${opId}'`);
+    throw new Error(`Unknown OpCode: '${opId}'`);
   }
   return def;
 }
