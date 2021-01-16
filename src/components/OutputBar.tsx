@@ -5,7 +5,7 @@ import SVGContext from './SVGContext'
 import IOBar from "./IOBar";
 
 export interface OutputBarProps {
-    outputGroups: OperationIOGroup[];
+    outputGroups: OperationIOGroup;
 }
 
 export default function OutputBar({ outputGroups }: OutputBarProps): ReactElement {

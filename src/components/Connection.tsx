@@ -40,7 +40,7 @@ export default function Connection(props: ConnectionProps) {
         isDragging={startProps.isDragging || endProps.isDragging}
       />
       <EndPoint dragRef={startRef} {...startProps} />
-      <EndPoint dragRef={endRef} {...endProps} />;
+      <EndPoint dragRef={endRef} {...endProps} />
     </>
   );
 }

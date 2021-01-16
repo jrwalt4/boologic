@@ -29,13 +29,14 @@ interface UserOperationDefinition extends OperationDefinition {
 }
 
 export interface OperationProperties {
-  opId: ID;
+  opCode: ID;
   position?: XYCoord;
   name?: string;
   description?: string;
 }
 
 export interface CodeDefinition {
+  /// TODO: refactor `operations` to be array
   operations: {
     [id: string]: OperationProperties;
   };
@@ -63,7 +64,7 @@ async function compileOperation(
   const opConnections = op.definition.connections;
   const opOutputIDs = op.outputIDs;
   const opOperations = Object.entries(op.definition.operations).map(
-    ([id, { opId }]) => {
+    ([id, { opCode: opId }]) => {
       const op = getOperation(registry, opId);
       return {
         id,
@@ -152,6 +153,33 @@ export const defaultRegistry: OperationRegistry = [
     definition: null
   }
 ];
+
+if("development" === process.env.NODE_ENV) {
+  let rootDef: OperationDefinition = defaultRegistry[2];
+  rootDef.inputIDs = ["A"];
+  rootDef.outputIDs = ["Q1"];
+  rootDef.definition = {
+    operations: {
+      'not1': {
+        opCode: 'NOT',
+        position: {
+          x: 50,
+          y: 50
+        }
+      }
+    },
+    connections: [
+      {
+        fromId: "A",
+        toId: "not1:A"
+      },
+      {
+        fromId: "not1:Q1",
+        toId: "Q1"
+      }
+    ]
+  }
+}
 
 export function getOperation(
   registry: OperationRegistry,

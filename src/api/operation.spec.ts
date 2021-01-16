@@ -24,7 +24,7 @@ describe("Operation", () => {
         outputIDs: ["Q1"],
         definition: {
           operations: {
-            n1: { opId: "NOT" }
+            n1: { opCode: "NOT" }
           },
           connections: [
             { fromId: "A", toId: "n1:A" },
@@ -39,7 +39,7 @@ describe("Operation", () => {
         outputIDs: ["Q1"],
         definition: {
           operations: {
-            n1: { opId: "AND" }
+            n1: { opCode: "AND" }
           },
           connections: [
             { fromId: "A", toId: "n1:A" },

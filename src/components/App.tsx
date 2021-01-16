@@ -3,7 +3,8 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
+  Redirect,
+  useParams
 } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import MuiContainer from "@material-ui/core/Container";
@@ -12,7 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
 import OperationEditor from "components/OperationEditor";
-import { BL_ROOT_OP_CODE } from "api/operation";
+import { BL_ROOT_OP_CODE, ID } from "api/operation";
 
 const AppContainer = withStyles((theme) => ({
   root: {
@@ -34,12 +35,16 @@ export default function App() {
             <Route exact path="/">
               <Redirect to={BL_ROOT_OP_CODE} />
             </Route>
-            <Route path="/:opCode">
-              <OperationEditor/>
-            </Route>
+            <Route path="/:opCode" component={OpEditorWithRoute} />
           </Switch>
         </Router>
       </AppContainer>
     </>
   );
+}
+
+function OpEditorWithRoute() {
+  const { opCode: routeId } = useParams<{ opCode: ID }>();
+  const id = routeId || BL_ROOT_OP_CODE; //if routeId is empty (i.e. ''), use root;
+  return <OperationEditor opId={id} />;
 }
